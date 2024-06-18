@@ -1,8 +1,8 @@
 title: Migrating your repository to GitHub
-tagline: Everything you need to know about moving projects to GitHub
 description: You're a migration away from using a full suite of development tools and premier third-party apps on GitHub. This course helps you seamlessly move code to GitHub and sets you up to do more after you make the move.
 template:
   name: github-move
+  repo: false
 before:
   - type: createIssue
     title: Plan the move
@@ -11,7 +11,7 @@ steps:
   - title: Plan the migration
     description: Explore your options for making the move to GitHub
     event: issues.closed
-    link: https://github.com/{{ user.username }}/{{ course.template.name }}/issues/1
+    link: '{{ repoUrl }}/issues/1'
     actions:
       - type: createIssue
         action_id: new_issue
@@ -25,7 +25,7 @@ steps:
   - title: Prepare the project
     description: Get your project ready to be moved to GitHub
     event: issues.closed
-    link: https://github.com/{{ user.username }}/{{ course.template.name }}/issues
+    link: '{{ repoUrl }}/issues'
     actions:
       - type: createIssue
         action_id: new_issue
@@ -41,11 +41,13 @@ steps:
   - title: Public or private repository?
     description: Understand the difference between a public and private repository
     event: issues.closed
-    link: https://github.com/{{ user.username }}/{{ course.template.name }}/issues
+    link: '{{ repoUrl }}/issues'
     actions:
       - type: createIssue
         title: Importing your project
         body: 05_move-import.md
+        comments:
+          - 08_graceful-exit.md
         action_id: new_issue
       - type: respond
         with: 02_next.md
@@ -55,31 +57,12 @@ steps:
   - title: Complete the Import
     description: Publish your project on GitHub
     event: push
-    link: https://github.com/{{ user.username }}/{{ course.template.name }}/issues
+    link: '{{ repoUrl }}/issues'
     actions:
-      - type: octokit
-        requester: user
-        method: migrations.getImportProgress
-        owner: '%payload.repository.owner.login%'
-        repo: '%payload.repository.name%'
-        action_id: import
-      - type: gate
-        left: '%actions.import.data.status%'
-        operator: '==='
-        right: complete
       - type: closeIssue
         issue: Importing your project
         action_id: closed
-      - type: createIssue
-        action_id: new_issue
-        title: A few parting words
-        body: 08_graceful-exit.md
-      - type: respond
-        with: 02_next.md
-        data:
-          issueURL: '%actions.new_issue.data.html_url%'
+
 tags: [
   'Git','GitHub'
 ]
-
-order: 4
